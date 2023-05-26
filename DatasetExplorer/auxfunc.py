@@ -23,7 +23,7 @@ def automatic_contour(im, bck=2, convex_hull=True, **kwargs):
     if bck == 2: # Mixed
         # Infer background color by the median
         im_median = np.median(gray)
-        bck = 0 if im_median < 100 else 1
+        bck = 0 if im_median < 255/2 else 1
 
     if bck == 1: # white
         gray = cv2.bitwise_not(gray)

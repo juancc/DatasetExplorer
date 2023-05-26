@@ -12,7 +12,7 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 
-from DatasetExplorer.analyzers import plot_mosaic
+from DatasetExplorer.analyzers import plot_mosaic, class_distribution, sizes
 
 
 parser = argparse.ArgumentParser(
@@ -31,7 +31,15 @@ def main(path):
     print(f' - {len(files)} Images on dataset')
 
     # Plot Mosaic
-    plot_mosaic(files)
+    # plot_mosaic(files)
+    # plt.show()
+
+    # Class distribution
+    # class_distribution(files, classes)
+    # plt.show()
+
+    # Image sizez
+    sizes(files)
     plt.show()
 
 
