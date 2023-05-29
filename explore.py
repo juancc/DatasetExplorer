@@ -12,7 +12,8 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 
 
-from DatasetExplorer.analyzers import plot_mosaic, class_distribution, sizes
+from DatasetExplorer.analyzers import plot_mosaic, class_distribution, \
+    sizes, complete_color_hist
 
 
 parser = argparse.ArgumentParser(
@@ -39,8 +40,13 @@ def main(path):
     # plt.show()
 
     # Image sizez
-    sizes(files)
+    # sizes(files)
+    # plt.show()
+
+    # Image classes color histogram
+    complete_color_hist(files, classes)
     plt.show()
+
 
 
 

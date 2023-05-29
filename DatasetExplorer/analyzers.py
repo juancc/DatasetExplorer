@@ -98,4 +98,68 @@ def sizes(files)->None:
     max_size = max(x+y) * 1.1
     plt.plot([0,max_size], [0, max_size], '--', color='black')
 
-     
+
+def calc_hist(ims_path, label, cat_color, pbar):
+    """Calculate imagecolor histogram of an image"""
+
+    im = cv2.imread(str(ims_path))
+
+    try:
+        im_hist = [ cv2.calcHist([im], [col_i], None, [256], [0, 256]) for col_i, col in enumerate(['b', 'g', 'r']) ]
+        im_hist = np.vstack(im_hist)
+
+        # divide per image area
+        h, w = im.shape[:2]
+        area = h*w
+        im_hist /= area
+
+        # Normalize
+        im_hist /= max(im_hist)
+
+    except Exception as e:
+        print(f'Err {e} reading image: {ims_path}')
+    else:
+        if label in cat_color:
+            cat_color[label] += im_hist
+        else:
+            cat_color[label] = im_hist
+    
+    pbar.update()
+        
+def complete_color_hist(files, classes, color_alpha=0.5)->None:
+    """
+        Display the color distribution per class. 
+        The histogram of percentage of pixel count per color of all the images of a class
+        Histogram of pixel count / image size per color
+
+        WARNING: This class loads all the dataset images if not loaded before
+
+    """
+    # pixel count per RGB (0-256) per chanel for all the images per category
+    # R: [0:256]
+    # B: [256:512]
+    # G: [512:768]
+    cat_color = {} # {id: [number of pixels per color]}
+    with tqdm(total=len(files)) as pbar:
+        for ims_path in files:
+            label = str(ims_path).split(os.sep)[-2] 
+            calc_hist(ims_path, label, cat_color, pbar)
+
+    # n = len([ idx for idx, cat in dataset.labels.items() if idx in cat_color])
+    n = len(classes)
+    fig, axs = plt.subplots(n, constrained_layout = True)
+    fig.set_figheight(n*2.5)
+
+    red = (1,0,0, color_alpha)
+    green = (0,1,0, color_alpha)
+    blue = (0,0,1, color_alpha)
+
+    fig_ax = 0
+    for idx in classes:
+        if idx in cat_color:
+            axs[fig_ax].set_title(idx)
+            for i in range(0, 256):
+                axs[fig_ax].bar(i, cat_color[idx][i+512], color=red, linewidth=0, width=1.0)
+                axs[fig_ax].bar(i, cat_color[idx][i], color=blue, linewidth=0, width=1.0)
+                axs[fig_ax].bar(i, cat_color[idx][i+256], color=green, linewidth=0, width=1.0) 
+            fig_ax += 1   
