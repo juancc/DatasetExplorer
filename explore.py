@@ -45,7 +45,8 @@ def main(path):
 
     # Image classes color histogram
     complete_color_hist(files, classes)
-    plt.show()
+    # plt.show()
+    plt.savefig("/Users/juanc/Downloads/archive/image_class_histogram.png")
 
 
 

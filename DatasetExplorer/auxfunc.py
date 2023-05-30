@@ -51,3 +51,37 @@ def automatic_contour(im, bck=2, convex_hull=True, **kwargs):
             hull_center = (cX, cY)
 
     return hull, hull_area, hull_center
+
+
+
+def calc_hist(im_path, label, cat_hist, pbar):
+    """Calculate imagecolor histogram of an image
+        : param im_path : (str) Image path
+        : param label : (str) Image class label
+        : param cat_hist: (dict) label: class_histogram
+    """
+
+    im = cv2.imread(str(im_path))
+
+    try:
+        im_hist = [ cv2.calcHist([im], [col_i], None, [256], [0, 256])\
+                    for col_i, col in enumerate(['b', 'g', 'r']) ]
+        im_hist = np.vstack(im_hist)
+
+        # divide per image area
+        h, w = im.shape[:2]
+        area = h*w
+        im_hist /= area
+
+        # Normalize
+        im_hist /= max(im_hist)
+
+    except Exception as e:
+        print(f'Err {e} reading image: {im_path}')
+    else:
+        if label in cat_hist:
+            cat_hist[label] += im_hist
+        else:
+            cat_hist[label] = im_hist
+    
+    pbar.update()
