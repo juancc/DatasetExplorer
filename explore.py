@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 from DatasetExplorer.analyzers import plot_mosaic, class_distribution, \
     sizes, complete_color_hist
-
+from DatasetExplorer.auxfunc import create_out_dir
 
 parser = argparse.ArgumentParser(
                     prog='DatasetExplorer',
@@ -24,6 +24,12 @@ parser.add_argument('path', help='Dataset location')
 
 
 def main(path):
+    print(f' -- DATASET EXPLORER --')
+
+    # Create output folder. All the plots will be saved here
+    out_path = create_out_dir(path, tag='exp')
+
+
     classes = os.listdir(path)
     print(f' - {len(classes)} in Dataset: {", ".join(classes)}')
     

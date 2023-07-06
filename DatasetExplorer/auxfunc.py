@@ -3,6 +3,7 @@ Some auxfunc for the analyzers
 
 JCA
 """
+import os
 import random
 
 import cv2
@@ -85,3 +86,13 @@ def calc_hist(im_path, label, cat_hist, pbar):
             cat_hist[label] = im_hist
     
     pbar.update()
+
+
+def create_out_dir(path, tag='out'):
+    output = path.split(os.sep)[-1]+f'_{tag}'
+
+    output_dir = os.path.join(os.sep.join(path.split(os.sep)[:-1]), output)
+    os.makedirs(output_dir, exist_ok=True)
+    print(f' - Output directory: {output_dir}')
+
+    return output_dir
